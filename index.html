@@ -19,14 +19,14 @@
                 box-sizing: border-box;
             }
             ::selection {
-                background: #555; 
-                color: #ffffff; 
+                background: #555;
+                color: #ffffff;
             }
             html {
                 scroll-behavior: smooth;
             }
             body {
-                background-color: #080808; 
+                background-color: #080808;
                 color: #e0e0e0;
                 font-family: "Cormorant Garamond", serif;
                 line-height: 1.6;
@@ -40,17 +40,12 @@
             ul {
                 list-style: none;
             }
-            h1,
-            h2,
-            h3 {
+            h1, h2, h3 {
                 font-weight: 300;
                 letter-spacing: 0.05em;
             }
-            h1 {
-                font-size: 4rem;
-            }
             h2 {
-                font-size: 2.5rem;
+                font-size: clamp(1.8rem, 5vw, 2.5rem);
                 margin-bottom: 2rem;
                 border-bottom: 1px solid #222;
                 padding-bottom: 10px;
@@ -62,56 +57,78 @@
                 letter-spacing: 0.05em;
                 color: #aaaaaa;
             }
+
+            /* ─── NAV ─── */
             nav {
                 position: fixed;
                 top: 0;
                 width: 100%;
-                padding: 2rem 4rem;
+                padding: 1.5rem 2rem;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 z-index: 1000;
                 background: linear-gradient(
                     to bottom,
-                    rgba(8, 8, 8, 0.9) 0%,
+                    rgba(8, 8, 8, 0.95) 0%,
                     rgba(8, 8, 8, 0) 100%
                 );
-                mix-blend-mode: difference;
             }
 
             .logo {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
                 font-weight: 600;
                 letter-spacing: 0.2em;
                 text-transform: uppercase;
                 display: flex;
                 align-items: center;
-                gap: 0.6rem;
+                gap: 0.5rem;
+                flex-shrink: 0;
             }
             .logo img {
-                height: 1.5rem;
-                width: 1.5rem;
+                height: 1.3rem;
+                width: 1.3rem;
                 object-fit: contain;
             }
 
+            /* hamburger button — hidden on desktop */
+            .hamburger {
+                display: none;
+                flex-direction: column;
+                gap: 5px;
+                cursor: pointer;
+                padding: 4px;
+                background: none;
+                border: none;
+            }
+            .hamburger span {
+                display: block;
+                width: 22px;
+                height: 1px;
+                background: #e0e0e0;
+                transition: all 0.3s ease;
+            }
+            .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+            .hamburger.open span:nth-child(2) { opacity: 0; }
+            .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
             .nav-links {
                 display: flex;
-                gap: 3rem;
+                gap: 2.5rem;
             }
-
             .nav-links a {
                 font-family: "Montserrat", sans-serif;
-                font-size: 0.75rem;
+                font-size: 0.7rem;
                 text-transform: uppercase;
                 letter-spacing: 0.2em;
                 opacity: 0.7;
             }
-
             .nav-links a:hover {
                 opacity: 1;
-                text-decoration: line-through; 
+                text-decoration: line-through;
             }
 
+            /* ─── HERO ─── */
             .hero {
                 height: 100vh;
                 display: flex;
@@ -120,17 +137,17 @@
                 align-items: center;
                 text-align: center;
                 position: relative;
+                padding: 2rem;
             }
-
             .hero h1 {
-                font-size: 6vw;
+                font-size: clamp(2.5rem, 10vw, 6vw);
                 font-style: italic;
                 animation: fadeIn 2s ease-out;
+                line-height: 1.2;
             }
-
             .hero-sub {
                 font-family: "Montserrat", sans-serif;
-                font-size: 0.9rem;
+                font-size: clamp(0.65rem, 2.5vw, 0.9rem);
                 letter-spacing: 0.3em;
                 margin-top: 1rem;
                 text-transform: uppercase;
@@ -138,131 +155,133 @@
                 animation: fadeIn 2s ease-out 0.5s forwards;
             }
 
+            /* ─── SECTIONS ─── */
             section {
-                padding: 6rem 4rem;
-                min-height:10vh;
+                padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+                min-height: 10vh;
             }
 
+            /* ─── GALLERY ─── */
             .gallery-grid {
                 column-count: 3;
-                column-gap: 2rem;
+                column-gap: 1.5rem;
             }
-
-            @media (max-width: 900px) {
-                .gallery-grid {
-                    column-count: 2;
-                }
-            }
-            @media (max-width: 600px) {
-                .gallery-grid {
-                    column-count: 1;
-                }
-            }
-
             .gallery-item {
-                margin-bottom: 2rem;
+                margin-bottom: 1.5rem;
                 break-inside: avoid;
                 position: relative;
                 overflow: hidden;
             }
-
             .gallery-item img {
                 width: 100%;
                 display: block;
                 transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             }
-
             .gallery-item:hover img {
                 transform: scale(1.02);
             }
-
             .caption {
-                margin-top: 0.5rem;
-                font-size: 0.9rem;
+                margin-top: 0.4rem;
+                font-size: 0.85rem;
                 font-style: italic;
                 opacity: 0.5;
                 text-align: right;
             }
-                /* font-family: "Montserrat", sans-serif;
-                font-size: 0.65rem;
-                letter-spacing: 0.15em;
-                text-transform: uppercase;
-                color: #444;
-                text-align: right;
-                margin-top: 0.2rem;
-            } */
 
+            /* ─── VIEW MORE ─── */
+            .view-more-container {
+                text-align: center;
+                margin-top: 3rem;
+                width: 100%;
+                padding: 0 clamp(1.5rem, 5vw, 4rem);
+            }
+            .btn-minimal {
+                display: inline-block;
+                background: transparent;
+                border: 1px solid #333;
+                color: #aaa;
+                padding: 0.9rem 2.5rem;
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1.1rem;
+                font-style: italic;
+                cursor: pointer;
+                transition: all 0.4s ease;
+                letter-spacing: 0.1em;
+                text-decoration: none;
+            }
+            .btn-minimal:hover {
+                border-color: #e0e0e0;
+                color: #fff;
+                background-color: rgba(255,255,255,0.05);
+            }
+
+            /* ─── EVENTS ─── */
             .event-list {
                 border-top: 1px solid #222;
             }
-
             .event-item {
                 display: flex;
                 justify-content: space-between;
                 align-items: baseline;
-                padding: 2rem 0;
+                padding: 1.5rem 0;
                 border-bottom: 1px solid #222;
                 transition: background 0.3s;
                 cursor: pointer;
+                gap: 1rem;
             }
-
             .event-item:hover h3 {
-                padding-left: 20px;
+                padding-left: 16px;
                 color: #fff;
             }
-
             .event-item h3 {
-                font-size: 2rem;
+                font-size: clamp(1.2rem, 4vw, 2rem);
                 transition: padding 0.4s ease;
             }
-
             .event-date {
                 font-family: "Montserrat", sans-serif;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
                 letter-spacing: 0.1em;
+                white-space: nowrap;
+                opacity: 0.6;
+                flex-shrink: 0;
             }
 
+            /* ─── TECH GRID ─── */
             .tech-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 4rem;
-                margin-top: 3rem;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 3rem;
+                margin-top: 2rem;
             }
-
             .tech-item h4 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
                 margin-bottom: 0.5rem;
                 color: #fff;
             }
-
             .tech-specs {
                 font-family: "Montserrat", sans-serif;
-                font-size: 0.8rem;
+                font-size: 0.78rem;
                 color: #666;
                 line-height: 1.8;
             }
 
+            /* ─── FOOTER ─── */
             footer {
-                padding: 4rem;
+                padding: 3rem 2rem;
                 text-align: center;
                 border-top: 1px solid #111;
                 font-family: "Montserrat", sans-serif;
                 font-size: 0.7rem;
-                letter-spacing: 0.2em;
+                letter-spacing: 0.15em;
                 color: #444;
+                line-height: 2;
             }
 
+            /* ─── ANIMATIONS ─── */
             @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+                from { opacity: 0; transform: translateY(20px); }
+                to   { opacity: 1; transform: translateY(0); }
             }
-
             .scroll-reveal {
                 opacity: 0;
                 transform: translateY(30px);
@@ -272,30 +291,67 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-            .view-more-container { 
-                text-align: center; 
-                margin-top: 4rem; 
-                width: 100%; 
-            }
-            .btn-minimal {
-                display: inline-block;
-                background: transparent; 
-                border: 1px solid #333;
-                color: #aaa; 
-                padding: 1rem 3rem; 
-                font-family: 'Cormorant Garamond', serif;
-                font-size: 1.2rem; 
-                font-style: italic; 
-                cursor: pointer;
-                transition: all 0.4s ease; 
-                letter-spacing: 0.1em;
-                text-decoration: none;
+
+            /* ─── MOBILE BREAKPOINTS ─── */
+            @media (max-width: 768px) {
+                /* Nav becomes hamburger menu */
+                .hamburger {
+                    display: flex;
+                }
+                .nav-links {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100vh;
+                    background: rgba(8, 8, 8, 0.98);
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 2.5rem;
+                    z-index: 999;
+                }
+                .nav-links.open {
+                    display: flex;
+                }
+                .nav-links a {
+                    font-size: 0.9rem;
+                    letter-spacing: 0.3em;
+                    opacity: 0.8;
+                }
+
+                /* Gallery: 2 cols on tablet-ish, 1 on small */
+                .gallery-grid {
+                    column-count: 2;
+                    column-gap: 1rem;
+                }
+
+                /* Equipments stack vertically */
+                .tech-grid {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
             }
 
-            .btn-minimal:hover { 
-                border-color: #e0e0e0; 
-                color: #fff; 
-                background-color: rgba(255,255,255,0.05); 
+            @media (max-width: 480px) {
+                nav {
+                    padding: 1.2rem 1.5rem;
+                }
+                .gallery-grid {
+                    column-count: 1;
+                }
+                .hero h1 {
+                    font-size: clamp(2.2rem, 12vw, 3.5rem);
+                }
+                .event-item {
+                    flex-direction: column;
+                    gap: 0.3rem;
+                    align-items: flex-start;
+                }
+                .event-date {
+                    font-size: 0.65rem;
+                }
             }
         </style>
     </head>
@@ -305,12 +361,17 @@
                 <img src="images/logocircled.png" alt="Pixel logo" />
                 Pixel.
             </div>
-            <div class="nav-links">
-                <a href="#clicks">Clicks</a>
-                <a href="#events">Events</a>
-                <a href="#workshops">Learn</a>
-                <a href="#equipments">Equipments</a>
-                <a href="about.html">About</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="#clicks" class="nav-close">Clicks</a>
+                <a href="#events" class="nav-close">Events</a>
+                <a href="#workshops" class="nav-close">Learn</a>
+                <a href="#equipments" class="nav-close">Equipments</a>
+                <a href="about.html" class="nav-close">About</a>
             </div>
         </nav>
 
@@ -324,51 +385,31 @@
                 <h2>Clicks.</h2>
                 <div class="gallery-grid">
                     <div class="gallery-item">
-                        <img src="images/Jaguli_Farmer.jpeg"
-                        alt="Farmer">
+                        <img src="images/Jaguli_Farmer.jpeg" alt="Farmer">
                         <div class="caption">Tijare Mandar</div>
                     </div>
                     <div class="gallery-item">
-                        <img
-                            src="images/haze.JPG"
-                            alt="haze"
-                        />
+                        <img src="images/haze.JPG" alt="haze" />
                         <div class="caption">haze</div>
                     </div>
                     <div class="gallery-item">
-                        <img
-                            src="images/Man with a horse.jpg"
-                            alt="man with a horse"
-                        />
+                        <img src="images/Man with a horse.jpg" alt="man with a horse" />
                         <div class="caption">Tejendra Singh</div>
                     </div>
                     <div class="gallery-item">
-                        <img
-                            src="images/Straightlines.jpeg"
-                            alt="Straight Lines"
-                        />
+                        <img src="images/Straightlines.jpeg" alt="Straight Lines" />
                         <div class="caption">Kaustav Gangopadhyay</div>
                     </div>
                     <div class="gallery-item">
-                        <img
-                            src="images/kalyanghoshgoldenhour2.jpeg"
-                            alt="Kalyan Ghosh"
-                        />
+                        <img src="images/kalyanghoshgoldenhour2.jpeg" alt="Kalyan Ghosh" />
                         <div class="caption">Kalyan Ghosh</div>
-
                     </div>
                     <div class="gallery-item">
-                        <img
-                            src="images/Red-crested-pochard.jpeg"
-                            alt="Red crested pochard"
-                        />
+                        <img src="images/Red-crested-pochard.jpeg" alt="Red crested pochard" />
                         <div class="caption">Red crested pochard</div>
                     </div>
                     <div class="gallery-item">
-                        <img
-                            src="images/Yumthang_Valley.jpeg"
-                            alt="Yumthang Valley"
-                        />
+                        <img src="images/Yumthang_Valley.jpeg" alt="Yumthang Valley" />
                         <div class="caption">Tijare Mandar Rajesh</div>
                     </div>
                     <div class="gallery-item">
@@ -378,6 +419,7 @@
                 </div>
             </div>
         </section>
+
         <div class="view-more-container scroll-reveal">
             <a href="archive.html" class="btn-minimal">View Archives</a>
         </div>
@@ -388,11 +430,11 @@
                 <div class="event-list">
                     <div class="event-item">
                         <h3><a href="themedweekly.html">Weekly Themed</a></h3>
-                        <span class="event-date">Feb-Mar, 2026</span>
+                        <span class="event-date">Feb–Mar, 2026</span>
                     </div>
                     <div class="event-item">
                         <h3><a href="coloredweekly.html">Weekly Colored</a></h3>
-                        <span class="event-date">Aug-Sep, 2025</span>
+                        <span class="event-date">Aug–Sep, 2025</span>
                     </div>
                     <div class="event-item">
                         <h3>Inquivesta Exhibition</h3>
@@ -421,18 +463,17 @@
                 </div>
             </div>
         </section>
+
         <section id="equipments">
             <div class="scroll-reveal">
                 <h2>Equipments.</h2>
-                <p style="margin-bottom: 2rem">
-                    Gear available for club members.
-                </p>
+                <p style="margin-bottom: 2rem">Gear available for club members.</p>
                 <div class="tech-grid">
                     <div class="tech-item">
                         <h4>Bodies</h4>
                         <div class="tech-specs">
                             Sony Alpha ILCE 6400L<br />
-                            Nikon D5300 <br />
+                            Nikon D5300<br />
                             FUJIFILM Instax Mini EVO
                         </div>
                     </div>
@@ -458,22 +499,36 @@
 
         <footer>
             PIXEL &copy; 2025<br />
-            Indian Institute of Science Education and Research Kolkata <br />
-            All contents listed on the website are property of Pixel</footer>
+            Indian Institute of Science Education and Research Kolkata<br />
+            All contents listed on the website are property of Pixel
+        </footer>
 
         <script>
-            const observerOptions = {
-                threshold: 0.1,
-            };
+            // Scroll reveal
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("visible");
-                    }
+                    if (entry.isIntersecting) entry.target.classList.add("visible");
                 });
-            }, observerOptions);
-            document.querySelectorAll(".scroll-reveal").forEach((el) => {
-                observer.observe(el);
+            }, { threshold: 0.1 });
+            document.querySelectorAll(".scroll-reveal").forEach((el) => observer.observe(el));
+
+            // Hamburger menu
+            const hamburger = document.getElementById("hamburger");
+            const navLinks  = document.getElementById("nav-links");
+
+            hamburger.addEventListener("click", () => {
+                hamburger.classList.toggle("open");
+                navLinks.classList.toggle("open");
+                document.body.style.overflow = navLinks.classList.contains("open") ? "hidden" : "";
+            });
+
+            // Close menu when a link is tapped
+            document.querySelectorAll(".nav-close").forEach(link => {
+                link.addEventListener("click", () => {
+                    hamburger.classList.remove("open");
+                    navLinks.classList.remove("open");
+                    document.body.style.overflow = "";
+                });
             });
         </script>
     </body>
