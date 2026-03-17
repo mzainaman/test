@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Understanding Light | PIXEL</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            /* --- RESET & BASE --- */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            ::selection {
+                background: #555;
+                color: #ffffff;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                background-color: #080808;
+                color: #e0e0e0;
+                font-family: "Cormorant Garamond", serif;
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+                transition: opacity 0.3s ease;
+            }
+
+            ul {
+                list-style: none;
+            }
+
+            /* --- TYPOGRAPHY --- */
+            h1,
+            h2,
+            h3 {
+                font-weight: 300;
+                letter-spacing: 0.05em;
+            }
+
+            h1 {
+                font-size: 4rem;
+            }
+            h2 {
+                font-size: 2.5rem;
+                margin-bottom: 2rem;
+                padding-bottom: 10px;
+                display: inline-block;
+            }
+            h3 {
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+                color: #fff;
+            }
+            h4 {
+                font-size: 1.3rem;
+                margin-bottom: 0.8rem;
+                color: #ccc;
+                font-weight: 400;
+            }
+            p {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 200;
+                letter-spacing: 0.05em;
+                color: #f4f4f4;
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+
+            /* --- NAVIGATION --- */
+            nav {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                padding: 2rem 4rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 1000;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(8, 8, 8, 0.9) 0%,
+                    rgba(8, 8, 8, 0) 100%
+                );
+                mix-blend-mode: difference;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                font-weight: 600;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 3rem;
+            }
+
+            .nav-links a {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                opacity: 0.7;
+            }
+
+            .nav-links a:hover {
+                opacity: 1;
+                text-decoration: line-through;
+            }
+
+            /* --- HERO SECTION --- */
+            .hero {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                position: relative;
+            }
+
+            .hero h1 {
+                font-size: 6vw;
+                font-style: italic;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .hero-sub {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.9rem;
+                letter-spacing: 0.3em;
+                margin-top: 1rem;
+                text-transform: uppercase;
+                opacity: 0;
+                animation: fadeIn 2s ease-out 0.5s forwards;
+            }
+
+            /* --- SECTIONS GENERAL --- */
+            section {
+                padding: 6rem 4rem;
+                min-height: 60vh;
+            }
+
+            .intro-text {
+                max-width: 800px;
+                margin: 0 auto 4rem;
+                text-align: center;
+            }
+
+            /* --- LIGHT PRINCIPLES --- */
+            .principle-container {
+                margin-bottom: 6rem;
+                border-top: 1px solid #222;
+                padding-top: 3rem;
+            }
+
+            /* Text-only principle layout (no visual column) */
+            .principle-text-only {
+                max-width: 720px;
+                margin-top: 1.5rem;
+            }
+
+            /* Two-column layout for principles with a visual */
+            .principle-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4rem;
+                align-items: start;
+                margin-top: 2rem;
+            }
+
+            @media (max-width: 900px) {
+                .principle-content {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+            }
+
+            .principle-text {
+                padding-right: 2rem;
+            }
+
+            .principle-visual {
+                position: relative;
+                aspect-ratio: 1;
+                background: #111;
+                border: 1px solid #222;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .emphasis {
+                font-style: italic;
+                color: #e0e0e0;
+                font-size: 1.1rem;
+                display: block;
+                margin-bottom: 1rem;
+            }
+
+            .tip-box {
+                margin-top: 2rem;
+                padding: 1.5rem;
+                border-left: 2px solid #333;
+                background: rgba(255, 255, 255, 0.02);
+            }
+
+            .tip-label {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.7rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: #666;
+                margin-bottom: 0.5rem;
+            }
+
+            /* --- EXPOSURE TRIANGLE --- */
+            .triangle-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 3rem;
+                margin-top: 3rem;
+            }
+
+            @media (max-width: 900px) {
+                .triangle-grid {
+                    grid-template-columns: 1fr;
+                    gap: 2rem;
+                }
+            }
+
+            .triangle-item {
+                padding: 2rem;
+                border: 1px solid #222;
+                background: rgba(255, 255, 255, 0.02);
+                transition: all 0.4s ease;
+            }
+
+            .triangle-item:hover {
+                border-color: #444;
+                background: rgba(255, 255, 255, 0.04);
+                transform: translateY(-5px);
+            }
+
+            .spec-list {
+                margin-top: 1rem;
+                padding-left: 1.5rem;
+            }
+
+            .spec-list li {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.9rem;
+                color: #888;
+                margin-bottom: 0.5rem;
+                position: relative;
+            }
+
+            .spec-list li:before {
+                content: "—";
+                position: absolute;
+                left: -1.5rem;
+                color: #444;
+            }
+
+            /* --- QUALITY OF LIGHT --- */
+            .quality-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+                margin-top: 3rem;
+            }
+
+            @media (max-width: 900px) {
+                .quality-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .quality-card {
+                border-top: 1px solid #222;
+                padding-top: 2rem;
+            }
+
+            /* --- FOOTER --- */
+            footer {
+                padding: 4rem;
+                text-align: center;
+                border-top: 1px solid #111;
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.7rem;
+                letter-spacing: 0.2em;
+                color: #444;
+            }
+
+            /* --- ANIMATIONS --- */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .scroll-reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: all 0.8s ease-out;
+            }
+            .scroll-reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .btn-minimal {
+                display: inline-block;
+                background: transparent;
+                border: 1px solid #333;
+                color: #aaa;
+                padding: 1rem 3rem;
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1.2rem;
+                font-style: italic;
+                cursor: pointer;
+                transition: all 0.4s ease;
+                letter-spacing: 0.1em;
+                text-decoration: none;
+                margin-top: 2rem;
+            }
+
+            .btn-minimal:hover {
+                border-color: #e0e0e0;
+                color: #fff;
+                background-color: rgba(255,255,255,0.05);
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <div class="logo">Pixel.</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#fundamentals">Fundamentals</a>
+                <a href="#direction">Direction</a>
+                <a href="#exposure">Exposure</a>
+            </div>
+        </nav>
+
+        <header class="hero">
+            <h1>Chasing the Light</h1>
+            <div class="hero-sub">The Photographer's Medium</div>
+        </header>
+
+        <section id="intro">
+            <div class="intro-text scroll-reveal">
+                <p>Photography is, at its heart, the art of capturing light. If you look at the word itself, it is derived from Greek roots that mean "drawing with light." The understanding of light and its behavior is very much essential to making interesting images. By knowing how to control the light is how we usually convey meaning to the image.</p>
+            </div>
+        </section>
+
+        <section id="fundamentals">
+            <div class="scroll-reveal">
+                <h2>Fundamental Properties.</h2>
+
+                <div class="principle-container">
+                    <h3>Quality of Light</h3>
+                    <div class="quality-grid">
+                        <div class="quality-card">
+                            <h4>Hard Light</h4>
+                            <p>Made by small, direct light sources such as the midday sun or an unaltered flash. Hard light casts strong, defined shadows with hard edges. Hard light highlights texture, creates high contrast, and can suggest drama, hardness, or intensity. This type of light is ideal for architectural photography or graphic images.</p>
+                            <div class="tip-box">
+                                <div class="tip-label">When to Use</div>
+                                <p>Dramatic portraits, emphasizing texture, creating strong graphic elements, conveying intensity or tension.</p>
+                            </div>
+                        </div>
+                        <div class="quality-card">
+                            <h4>Soft Light</h4>
+                            <p>The results come from large, diffused light sources, like overcast skies, light filtered through clouds, or altered studio lights. Soft light has smooth change between highlights and shadows with low contrast. It is ideal for portraits, showing details, representing a feeling of calmness, gentleness, or softness in general.</p>
+                            <div class="tip-box">
+                                <div class="tip-label">When to Use</div>
+                                <p>Portrait photography, product shots, revealing delicate details, creating peaceful or romantic moods.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="principle-container">
+                    <h3>Color Temperature</h3>
+                    <div class="principle-content">
+                        <div class="principle-text">
+                            <span class="emphasis">Light has color, and that color dramatically affects mood and perception.</span>
+                            <p>Color temperature is measured in Kelvin, just like the thermodynamic temperature. It spans from warm (orange/red) to cool (blue). We use terms for some commonly known temperature. For example, candlelight is 1800K, sunset is 3000K, noon is 5500k, and overcast skies are 7000K. It is noted in your camera most of the times. Warm light is linked with comfort, intimacy, nostalgia, and a sense of warmth, of course. Knowing how to control the white balance allows you to improve or fix the color casts in your photos, making them look more balanced.</p>
+                            <div class="tip-box">
+                                <div class="tip-label">Creative Control</div>
+                                <p>Golden hour (sunrise/sunset) provides warm, flattering light. Blue hour (twilight) offers cool, ethereal tones. Use white balance intentionally to reinforce your image's emotional message.</p>
+                            </div>
+                        </div>
+                        <div class="principle-visual">
+                            <svg width="100%" height="100%" viewBox="0 0 400 400">
+                                <defs>
+                                    <linearGradient id="tempGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#ff6b00;stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:#ffffff;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#4da6ff;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <rect x="50" y="150" width="300" height="100" fill="url(#tempGradient)" opacity="0.8"/>
+                                <text x="60" y="140" fill="#ff6b00" font-size="14" font-family="Montserrat">Warm</text>
+                                <text x="320" y="140" fill="#4da6ff" font-size="14" font-family="Montserrat">Cool</text>
+                                <text x="200" y="280" fill="#aaa" font-size="12" font-family="Montserrat" text-anchor="middle">1,800K → 5,500K → 7,000K</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="principle-container">
+                    <h3>Intensity</h3>
+                    <div class="principle-text-only">
+                        <span class="emphasis">The brightness of light determines exposure and influences mood.</span>
+                        <p>Intensity has a huge impact on your camera sensor as it captures the image. During bright light conditions, it is ideal for you to use a fast shutter speed and small aperture, as it won't make your image look excessively bright. In low light, you need to use large aperture, higher ISO, or slow shutter speed, each with its own creative possibilities. Else you will have nothing but a dark screen. Intensity also determines the atmosphere of your image.</p>
+                        <div class="tip-box">
+                            <div class="tip-label">Practical Application</div>
+                            <p>Learn to read light intensity and adjust your exposure triangle accordingly. Use reflectors or diffusers to modify natural light intensity when needed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="direction">
+            <div class="scroll-reveal">
+                <h2>Direction of Light.</h2>
+
+                <div class="principle-container">
+                    <h3>Front Lighting</h3>
+                    <div class="principle-text-only">
+                        <span class="emphasis">Light coming from behind the camera toward the subject.</span>
+                        <p>Front lighting eliminates most shadows, creating even illumination across the subject. While this reduces texture and depth, it's excellent for capturing vibrant colors and clear details. Often used in fashion and commercial photography where every detail must be visible. The sun behind you at sunrise or sunset provides beautiful, warm front lighting.</p>
+                    </div>
+                </div>
+
+                <div class="principle-container">
+                    <h3>Side Lighting</h3>
+                    <div class="principle-text-only">
+                        <span class="emphasis">Light striking the subject from the side, creating dimension.</span>
+                        <p>Side lighting is arguably the most versatile and dramatic direction. It creates strong shadows on one side while illuminating the other, emphasizing texture, depth, and form. This technique reveals the three-dimensional nature of subjects and creates mood through the interplay of light and shadow. Morning and evening sun provide natural side lighting opportunities.</p>
+                    </div>
+                </div>
+
+                <div class="principle-container">
+                    <h3>Back Lighting</h3>
+                    <div class="principle-text-only">
+                        <span class="emphasis">Light positioned behind the subject, facing the camera.</span>
+                        <p>Backlighting creates silhouettes, rim lighting, or ethereal glows. It's romantic, mysterious, and visually striking. When properly exposed, it creates a halo effect around the subject's edges. Shooting into the sun during golden hour produces stunning backlit images. This technique requires careful exposure decisions: expose for the background for silhouettes, or expose for the subject for a high-key, dreamy effect.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exposure">
+            <div class="scroll-reveal">
+                <h2>The Exposure Triangle.</h2>
+                <p style="max-width: 800px; margin: 0 auto 3rem;">Controlling light through your camera involves three interconnected elements. Mastering their relationship allows you to capture any lighting condition creatively.</p>
+
+                <div class="triangle-grid">
+                    <div class="triangle-item">
+                        <h4>Aperture (f-stop)</h4>
+                        <p>The size of the lens opening that allows light to pass through. Measured in f-numbers like f/1.4, f/2.8, f/8, f/16.</p>
+                        <ul class="spec-list">
+                            <li>Wide aperture (f/1.4–f/2.8): More light, shallow depth of field</li>
+                            <li>Narrow aperture (f/11–f/22): Less light, deep depth of field</li>
+                            <li>Controls depth of field and background blur</li>
+                            <li>Affects sharpness and diffraction</li>
+                        </ul>
+                    </div>
+
+                    <div class="triangle-item">
+                        <h4>Shutter Speed</h4>
+                        <p>The duration the sensor is exposed to light. Measured in fractions of seconds or full seconds.</p>
+                        <ul class="spec-list">
+                            <li>Fast shutter (1/1000s+): Freezes motion, less light</li>
+                            <li>Slow shutter (1/30s–30s): Blurs motion, more light</li>
+                            <li>Controls motion blur and sharpness</li>
+                            <li>Affects camera shake and subject movement</li>
+                        </ul>
+                    </div>
+
+                    <div class="triangle-item">
+                        <h4>ISO Sensitivity</h4>
+                        <p>The sensor's sensitivity to light. Measured in numbers like ISO 100, 400, 1600, 6400.</p>
+                        <ul class="spec-list">
+                            <li>Low ISO (100–400): Cleaner images, needs more light</li>
+                            <li>High ISO (1600+): More sensitive, introduces noise</li>
+                            <li>Controls image quality and grain</li>
+                            <li>Affects dynamic range and color accuracy</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tip-box" style="max-width: 800px; margin: 3rem auto 0;">
+                    <div class="tip-label">Balancing the Triangle</div>
+                    <p>The three of them work together all the time. If you mess with one, and the others have to pick up the slack. Let us say, you're trying to freeze a subject that is moving fast, and crank up the shutter speed. Less light's getting in now, so something else has to give — open up the aperture a bit, or bump the ISO. Once you get a feel for that push and pull, you're not just fixing exposure problems, you're actually making choices.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="golden-blue">
+            <div class="scroll-reveal">
+                <h2>Magic Hours.</h2>
+
+                <div class="quality-grid" style="margin-top: 3rem;">
+                    <div class="quality-card">
+                        <h4>Golden Hour</h4>
+                        <p>The hour after sunrise and the hour before sunset. The sun is low on the horizon, creating warm, soft, directional light. Shadows are long and gentle, colors are rich and saturated. This is the most beloved time for photographers: the light is flattering for portraits, dramatic for landscapes, and magical for nearly any subject. The warm color temperature evokes emotion and nostalgia.</p>
+                        <div class="tip-box">
+                            <div class="tip-label">Golden Hour Techniques</div>
+                            <p>Use backlighting for rim light effects. Position subjects to catch the warm glow. Shoot silhouettes against colorful skies. The light changes rapidly, so work quickly.</p>
+                        </div>
+                    </div>
+
+                    <div class="quality-card">
+                        <h4>Blue Hour</h4>
+                        <p>The period of twilight before sunrise and after sunset when the sun is below the horizon. The sky takes on deep blue tones, creating an ethereal, dreamy atmosphere. City lights balance beautifully with the ambient blue light. This is prime time for urban photography, architecture, and moody landscapes. The cool color temperature creates mystery and calm.</p>
+                        <div class="tip-box">
+                            <div class="tip-label">Blue Hour Techniques</div>
+                            <p>Use longer exposures to capture detail in shadows. Balance artificial lights with natural light. The window is short (15-30 minutes), so plan and scout locations beforehand.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="text-align: center; padding: 4rem;">
+            <div class="scroll-reveal">
+                <p style="max-width: 700px; margin: 0 auto; font-size: 1.1rem;">Light is the photographer's paintbrush. Study it constantly. Notice how it changes throughout the day, how it interacts with different surfaces, how it shapes emotion and mood. The more you understand light, the more intentional and powerful your photography becomes.</p>
+                <a href="index.html" class="btn-minimal">Return Home</a>
+            </div>
+        </section>
+
+        <footer>
+            PIXEL &copy; 2025<br />
+            Indian Institute of Science Education and Research Kolkata <br />
+            All contents listed on the website are property of Pixel
+        </footer>
+
+        <script>
+            const observerOptions = {
+                threshold: 0.1,
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll(".scroll-reveal").forEach((el) => {
+                observer.observe(el);
+            });
+        </script>
+    </body>
+</html>
