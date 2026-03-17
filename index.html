@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PIXEL | IISER Kolkata</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            ::selection {
+                background: #555; 
+                color: #ffffff; 
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+            body {
+                background-color: #080808; 
+                color: #e0e0e0;
+                font-family: "Cormorant Garamond", serif;
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+            a {
+                text-decoration: none;
+                color: inherit;
+                transition: opacity 0.3s ease;
+            }
+            ul {
+                list-style: none;
+            }
+            h1,
+            h2,
+            h3 {
+                font-weight: 300;
+                letter-spacing: 0.05em;
+            }
+            h1 {
+                font-size: 4rem;
+            }
+            h2 {
+                font-size: 2.5rem;
+                margin-bottom: 2rem;
+                border-bottom: 1px solid #222;
+                padding-bottom: 10px;
+                display: inline-block;
+            }
+            p {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 200;
+                letter-spacing: 0.05em;
+                color: #aaaaaa;
+            }
+            nav {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                padding: 2rem 4rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 1000;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(8, 8, 8, 0.9) 0%,
+                    rgba(8, 8, 8, 0) 100%
+                );
+                mix-blend-mode: difference;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                font-weight: 600;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+            }
+            .logo img {
+                height: 1.5rem;
+                width: 1.5rem;
+                object-fit: contain;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 3rem;
+            }
+
+            .nav-links a {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                opacity: 0.7;
+            }
+
+            .nav-links a:hover {
+                opacity: 1;
+                text-decoration: line-through; 
+            }
+
+            .hero {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                position: relative;
+            }
+
+            .hero h1 {
+                font-size: 6vw;
+                font-style: italic;
+                animation: fadeIn 2s ease-out;
+            }
+
+            .hero-sub {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.9rem;
+                letter-spacing: 0.3em;
+                margin-top: 1rem;
+                text-transform: uppercase;
+                opacity: 0;
+                animation: fadeIn 2s ease-out 0.5s forwards;
+            }
+
+            section {
+                padding: 6rem 4rem;
+                min-height:10vh;
+            }
+
+            .gallery-grid {
+                column-count: 3;
+                column-gap: 2rem;
+            }
+
+            @media (max-width: 900px) {
+                .gallery-grid {
+                    column-count: 2;
+                }
+            }
+            @media (max-width: 600px) {
+                .gallery-grid {
+                    column-count: 1;
+                }
+            }
+
+            .gallery-item {
+                margin-bottom: 2rem;
+                break-inside: avoid;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .gallery-item img {
+                width: 100%;
+                display: block;
+                transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+
+            .gallery-item:hover img {
+                transform: scale(1.02);
+            }
+
+            .caption {
+                margin-top: 0.5rem;
+                font-size: 0.9rem;
+                font-style: italic;
+                opacity: 0.5;
+                text-align: right;
+            }
+                /* font-family: "Montserrat", sans-serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: #444;
+                text-align: right;
+                margin-top: 0.2rem;
+            } */
+
+            .event-list {
+                border-top: 1px solid #222;
+            }
+
+            .event-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                padding: 2rem 0;
+                border-bottom: 1px solid #222;
+                transition: background 0.3s;
+                cursor: pointer;
+            }
+
+            .event-item:hover h3 {
+                padding-left: 20px;
+                color: #fff;
+            }
+
+            .event-item h3 {
+                font-size: 2rem;
+                transition: padding 0.4s ease;
+            }
+
+            .event-date {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.8rem;
+                letter-spacing: 0.1em;
+            }
+
+            .tech-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 4rem;
+                margin-top: 3rem;
+            }
+
+            .tech-item h4 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                color: #fff;
+            }
+
+            .tech-specs {
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.8rem;
+                color: #666;
+                line-height: 1.8;
+            }
+
+            footer {
+                padding: 4rem;
+                text-align: center;
+                border-top: 1px solid #111;
+                font-family: "Montserrat", sans-serif;
+                font-size: 0.7rem;
+                letter-spacing: 0.2em;
+                color: #444;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .scroll-reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: all 0.8s ease-out;
+            }
+            .scroll-reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .view-more-container { 
+                text-align: center; 
+                margin-top: 4rem; 
+                width: 100%; 
+            }
+            .btn-minimal {
+                display: inline-block;
+                background: transparent; 
+                border: 1px solid #333;
+                color: #aaa; 
+                padding: 1rem 3rem; 
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1.2rem; 
+                font-style: italic; 
+                cursor: pointer;
+                transition: all 0.4s ease; 
+                letter-spacing: 0.1em;
+                text-decoration: none;
+            }
+
+            .btn-minimal:hover { 
+                border-color: #e0e0e0; 
+                color: #fff; 
+                background-color: rgba(255,255,255,0.05); 
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <div class="logo">
+                <img src="images/logocircled.png" alt="Pixel logo" />
+                Pixel.
+            </div>
+            <div class="nav-links">
+                <a href="#clicks">Clicks</a>
+                <a href="#events">Events</a>
+                <a href="#workshops">Learn</a>
+                <a href="#equipments">Equipments</a>
+                <a href="about.html">About</a>
+            </div>
+        </nav>
+
+        <header class="hero">
+            <h1>The Art of Seeing</h1>
+            <div class="hero-sub">Photography Club of IISER Kolkata</div>
+        </header>
+
+        <section id="clicks">
+            <div class="scroll-reveal">
+                <h2>Clicks.</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="images/Jaguli_Farmer.jpeg"
+                        alt="Farmer">
+                        <div class="caption">Tijare Mandar</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img
+                            src="images/haze.JPG"
+                            alt="haze"
+                        />
+                        <div class="caption">haze</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img
+                            src="images/Man with a horse.jpg"
+                            alt="man with a horse"
+                        />
+                        <div class="caption">Tejendra Singh</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img
+                            src="images/Straightlines.jpeg"
+                            alt="Straight Lines"
+                        />
+                        <div class="caption">Kaustav Gangopadhyay</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img
+                            src="images/kalyanghoshgoldenhour2.jpeg"
+                            alt="Kalyan Ghosh"
+                        />
+                        <div class="caption">Kalyan Ghosh</div>
+
+                    </div>
+                    <div class="gallery-item">
+                        <img
+                            src="images/Red-crested-pochard.jpeg"
+                            alt="Red crested pochard"
+                        />
+                        <div class="caption">Red crested pochard</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img
+                            src="images/Yumthang_Valley.jpeg"
+                            alt="Yumthang Valley"
+                        />
+                        <div class="caption">Tijare Mandar Rajesh</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/macrofly.jpeg" alt="Dragon fly">
+                        <div class="caption">Dhrubanarayana Chakrabarty</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="view-more-container scroll-reveal">
+            <a href="archive.html" class="btn-minimal">View Archives</a>
+        </div>
+
+        <section id="events">
+            <div class="scroll-reveal">
+                <h2>Events.</h2>
+                <div class="event-list">
+                    <div class="event-item">
+                        <h3><a href="themedweekly.html">Weekly Themed</a></h3>
+                        <span class="event-date">Feb-Mar, 2026</span>
+                    </div>
+                    <div class="event-item">
+                        <h3><a href="coloredweekly.html">Weekly Colored</a></h3>
+                        <span class="event-date">Aug-Sep, 2025</span>
+                    </div>
+                    <div class="event-item">
+                        <h3>Inquivesta Exhibition</h3>
+                        <span class="event-date">Feb, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="workshops">
+            <div class="scroll-reveal">
+                <h2>Learn.</h2>
+                <div class="event-list">
+                    <div class="event-item" onclick="window.location.href='composition.html'">
+                        <h3>Learn about compositions</h3>
+                        <span class="event-date">Theory</span>
+                    </div>
+                    <div class="event-item" onclick="window.location.href='understandlight.html'">
+                        <h3>Understanding Light</h3>
+                        <span class="event-date">Theory & Practical</span>
+                    </div>
+                    <div class="event-item" onclick="window.location.href='genreguide.html'">
+                        <h3>Genre Guide</h3>
+                        <span class="event-date">Theory</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="equipments">
+            <div class="scroll-reveal">
+                <h2>Equipments.</h2>
+                <p style="margin-bottom: 2rem">
+                    Gear available for club members.
+                </p>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h4>Bodies</h4>
+                        <div class="tech-specs">
+                            Sony Alpha ILCE 6400L<br />
+                            Nikon D5300 <br />
+                            FUJIFILM Instax Mini EVO
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <h4>Lenses</h4>
+                        <div class="tech-specs">
+                            Nikon AF-P 18-55mm F3.5-5.6 VR II Kit Lens<br />
+                            AF-S NIKKOR 200-500MM F/5.6E ED VR<br />
+                            Sony Alpha kit lens 14-50mm
+                        </div>
+                    </div>
+                    <div class="tech-item">
+                        <h4>Support</h4>
+                        <div class="tech-specs">
+                            Kodak Tripod stand<br />
+                            SAMSUNG 256GB SD Card<br />
+                            Sandisk 256GB SD Card
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            PIXEL &copy; 2025<br />
+            Indian Institute of Science Education and Research Kolkata <br />
+            All contents listed on the website are property of Pixel</footer>
+
+        <script>
+            const observerOptions = {
+                threshold: 0.1,
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll(".scroll-reveal").forEach((el) => {
+                observer.observe(el);
+            });
+        </script>
+    </body>
+</html>
