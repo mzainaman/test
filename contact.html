@@ -39,6 +39,8 @@
     .content h2{font-size:clamp(1.4rem,4vw,2rem);font-weight:300;margin-bottom:1.5rem;
                 padding-bottom:.6rem;border-bottom:1px solid #1e1e1e;letter-spacing:.04em;}
     .content p+p{margin-top:1.2rem;}
+    .content .email-link{text-decoration:underline;text-underline-offset:3px;}
+    .content .note{margin-top:2rem;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;opacity:.4;}
 
     footer{padding:2.5rem 2rem;text-align:center;border-top:1px solid #111;
            font-family:'Montserrat',sans-serif;font-size:.65rem;letter-spacing:.15em;color:#333;line-height:2;}
@@ -58,10 +60,8 @@
   <section class="content">
     <h2>Get in touch</h2>
     <p>Reach out for collaborations, questions, or just to say hello.</p>
-    <p>Email: <a href="mailto:hello@example.com" style="text-decoration:underline;text-underline-offset:3px;">hello@example.com</a></p>
-    <p style="margin-top:2rem;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;opacity:.4;">
-      More channels coming soon.
-    </p>
+    <p>Email: <a href="mailto:hello@example.com" class="email-link">hello@example.com</a></p>
+    <p class="note">More channels coming soon.</p>
   </section>
 
   <footer>Portfolio &mdash; <a href="index.html">Return to network</a></footer>
