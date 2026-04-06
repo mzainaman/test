@@ -1,519 +1,473 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PIXEL | IISER Kolkata</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio</title>
+  <meta name="description" content="Interactive portfolio — click a node to explore.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body { font-family: 'Montserrat', sans-serif; transition: background-color 0.5s; }
+    body.dark  { background: #080808; }
+    body.light { background: #ffffff; }
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap"
-            rel="stylesheet"
-        />
+    canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; display: block;
+    }
+    #bg-canvas { z-index: 1; }
+    #fg-canvas { z-index: 2; pointer-events: all; cursor: default; }
 
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            ::selection {
-                background: #555;
-                color: #ffffff;
-            }
-            html {
-                scroll-behavior: smooth;
-            }
-            body {
-                background-color: #080808;
-                color: #e0e0e0;
-                font-family: "Cormorant Garamond", serif;
-                line-height: 1.6;
-                overflow-x: hidden;
-            }
-            a {
-                text-decoration: none;
-                color: inherit;
-                transition: opacity 0.3s ease;
-            }
-            ul {
-                list-style: none;
-            }
-            h1, h2, h3 {
-                font-weight: 300;
-                letter-spacing: 0.05em;
-            }
-            h2 {
-                font-size: clamp(1.8rem, 5vw, 2.5rem);
-                margin-bottom: 2rem;
-                border-bottom: 1px solid #222;
-                padding-bottom: 10px;
-                display: inline-block;
-            }
-            p {
-                font-family: "Montserrat", sans-serif;
-                font-weight: 200;
-                letter-spacing: 0.05em;
-                color: #aaaaaa;
-            }
-            nav {
-                position: fixed;
-                top: 0;
-                width: 100%;
-                padding: 1.5rem 2rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                z-index: 1000;
-                background: linear-gradient(
-                    to bottom,
-                    rgba(8, 8, 8, 0.95) 0%,
-                    rgba(8, 8, 8, 0) 100%
-                );
-            }
+    #identity {
+      position: fixed; top: 1.6rem; left: 1.8rem; z-index: 10;
+      pointer-events: none; user-select: none;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-weight: 300; font-size: 1.25rem; letter-spacing: 0.04em;
+      transition: color 0.5s;
+    }
+    body.dark  #identity { color: rgba(255,255,255,0.55); }
+    body.light #identity { color: rgba(0,0,0,0.55); }
 
-            .logo {
-                font-size: 1.2rem;
-                font-weight: 600;
-                letter-spacing: 0.2em;
-                text-transform: uppercase;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                flex-shrink: 0;
-            }
-            .logo img {
-                height: 1.3rem;
-                width: 1.3rem;
-                object-fit: contain;
-            }
-            .hamburger {
-                display: none;
-                flex-direction: column;
-                gap: 5px;
-                cursor: pointer;
-                padding: 4px;
-                background: none;
-                border: none;
-            }
-            .hamburger span {
-                display: block;
-                width: 22px;
-                height: 1px;
-                background: #e0e0e0;
-                transition: all 0.3s ease;
-            }
-            .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-            .hamburger.open span:nth-child(2) { opacity: 0; }
-            .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    #theme-btn {
+      position: fixed; top: 1.4rem; right: 1.8rem; z-index: 10;
+      width: 2.1rem; height: 2.1rem; border-radius: 50%;
+      background: none; border: 1px solid currentColor;
+      font-size: 1rem; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.5s, opacity 0.3s;
+    }
+    body.dark  #theme-btn { color: rgba(255,255,255,0.45); }
+    body.light #theme-btn { color: rgba(0,0,0,0.45); }
+    #theme-btn:hover { opacity: 1 !important; }
 
-            .nav-links {
-                display: flex;
-                gap: 2.5rem;
-            }
-            .nav-links a {
-                font-family: "Montserrat", sans-serif;
-                font-size: 0.7rem;
-                text-transform: uppercase;
-                letter-spacing: 0.2em;
-                opacity: 0.7;
-            }
-            .nav-links a:hover {
-                opacity: 1;
-                text-decoration: line-through;
-            }
-            .hero {
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-align: center;
-                position: relative;
-                padding: 2rem;
-            }
-            .hero h1 {
-                font-size: clamp(2.5rem, 10vw, 6vw);
-                font-style: italic;
-                animation: fadeIn 2s ease-out;
-                line-height: 1.2;
-            }
+    #hint {
+      position: fixed; bottom: 1.6rem; left: 50%; transform: translateX(-50%);
+      z-index: 10; font-size: 0.6rem; letter-spacing: 0.3em;
+      text-transform: uppercase; pointer-events: none; white-space: nowrap;
+      transition: opacity 1.2s, color 0.5s;
+    }
+    body.dark  #hint { color: rgba(255,255,255,0.2); }
+    body.light #hint { color: rgba(0,0,0,0.2); }
+    #hint.hidden { opacity: 0; }
 
-            
-            .hero-sub {
-                font-family: "Montserrat", sans-serif;
-                font-size: clamp(0.65rem, 2.5vw, 0.9rem);
-                letter-spacing: 0.3em;
-                margin-top: 1rem;
-                text-transform: uppercase;
-                opacity: 0;
-                animation: fadeIn 2s ease-out 0.5s forwards;
-            }
-            section {
-                padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
-                min-height: 10vh;
-            }
-            .gallery-grid {
-                column-count: 3;
-                column-gap: 1.5rem;
-            }
-            .gallery-item {
-                margin-bottom: 1.5rem;
-                break-inside: avoid;
-                position: relative;
-                overflow: hidden;
-            }
-            .gallery-item img {
-                width: 100%;
-                display: block;
-                transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-            .gallery-item:hover img {
-                transform: scale(1.02);
-            }
-            .caption {
-                margin-top: 0.4rem;
-                font-size: 0.85rem;
-                font-style: italic;
-                opacity: 0.5;
-                text-align: right;
-            }
+    #tooltip {
+      position: fixed; z-index: 20;
+      padding: 0.28rem 0.65rem; font-size: 0.68rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      pointer-events: none; border-radius: 2px; white-space: nowrap;
+      transition: opacity 0.18s; opacity: 0;
+    }
+    body.dark  #tooltip { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.15); }
+    body.light #tooltip { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.85); border: 1px solid rgba(0,0,0,0.18); }
+    #tooltip.visible { opacity: 1; }
 
-            /* ─── VIEW MORE ─── */
-            .view-more-container {
-                text-align: center;
-                margin-top: 3rem;
-                width: 100%;
-                padding: 0 clamp(1.5rem, 5vw, 4rem);
-            }
-            .btn-minimal {
-                display: inline-block;
-                background: transparent;
-                border: 1px solid #333;
-                color: #aaa;
-                padding: 0.9rem 2.5rem;
-                font-family: 'Cormorant Garamond', serif;
-                font-size: 1.1rem;
-                font-style: italic;
-                cursor: pointer;
-                transition: all 0.4s ease;
-                letter-spacing: 0.1em;
-                text-decoration: none;
-            }
-            .btn-minimal:hover {
-                border-color: #e0e0e0;
-                color: #fff;
-                background-color: rgba(255,255,255,0.05);
-            }
-            .event-list {
-                border-top: 1px solid #222;
-            }
-            .event-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: baseline;
-                padding: 1.5rem 0;
-                border-bottom: 1px solid #222;
-                transition: background 0.3s;
-                cursor: pointer;
-                gap: 1rem;
-            }
-            .event-item:hover h3 {
-                padding-left: 16px;
-                color: #fff;
-            }
-            .event-item h3 {
-                font-size: clamp(1.2rem, 4vw, 2rem);
-                transition: padding 0.4s ease;
-            }
-            .event-date {
-                font-family: "Montserrat", sans-serif;
-                font-size: 0.75rem;
-                letter-spacing: 0.1em;
-                white-space: nowrap;
-                opacity: 0.6;
-                flex-shrink: 0;
-            }
-            .tech-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 3rem;
-                margin-top: 2rem;
-            }
-            .tech-item h4 {
-                font-size: 1.4rem;
-                margin-bottom: 0.5rem;
-                color: #fff;
-            }
-            .tech-specs {
-                font-family: "Montserrat", sans-serif;
-                font-size: 0.78rem;
-                color: #666;
-                line-height: 1.8;
-            }
-            footer {
-                padding: 3rem 2rem;
-                text-align: center;
-                border-top: 1px solid #111;
-                font-family: "Montserrat", sans-serif;
-                font-size: 0.7rem;
-                letter-spacing: 0.15em;
-                color: #444;
-                line-height: 2;
-            }
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to   { opacity: 1; transform: translateY(0); }
-            }
-            .scroll-reveal {
-                opacity: 0;
-                transform: translateY(30px);
-                transition: all 0.8s ease-out;
-            }
-            .scroll-reveal.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
+    @media (max-width: 600px) {
+      #identity  { font-size: 1rem; top: 1.2rem; left: 1.2rem; }
+      #theme-btn { top: 1.1rem; right: 1.2rem; width: 1.9rem; height: 1.9rem; }
+    }
+  </style>
+</head>
+<body class="dark">
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="fg-canvas"></canvas>
+  <div id="identity">Portfolio.</div>
+  <button id="theme-btn" title="Toggle theme" aria-label="Toggle light/dark theme">&#9680;</button>
+  <div id="hint">hover &amp; click the nodes</div>
+  <div id="tooltip"></div>
 
-            /* ─── MOBILE BREAKPOINTS ─── */
-            @media (max-width: 768px) {
-                /* Nav becomes hamburger menu */
-                .hamburger {
-                    display: flex;
-                }
-                .nav-links {
-                    display: none;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100vh;
-                    background: rgba(8, 8, 8, 0.98);
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 2.5rem;
-                    z-index: 999;
-                }
-                .nav-links.open {
-                    display: flex;
-                }
-                .nav-links a {
-                    font-size: 0.9rem;
-                    letter-spacing: 0.3em;
-                    opacity: 0.8;
-                }
+  <script>
+  (function () {
+    'use strict';
 
-                /* Gallery: 2 cols on tablet-ish, 1 on small */
-                .gallery-grid {
-                    column-count: 2;
-                    column-gap: 1rem;
-                }
+    /* ════════════════════════════════════════════════════════════
+       CONFIGURATION  —  edit these to customise the portfolio
+       ════════════════════════════════════════════════════════════ */
 
-                /* Equipments stack vertically */
-                .tech-grid {
-                    grid-template-columns: 1fr;
-                    gap: 2rem;
-                }
+    /** Navigation nodes shown in the foreground network. */
+    var NAV_NODES = [
+      { label: 'Contact',     href: 'contact.html'     },
+      { label: 'Passion',     href: 'passion.html'     },
+      { label: 'Work',        href: 'work.html'        },
+      { label: 'Subject',     href: 'subject.html'     },
+      { label: 'Note',        href: 'note.html'        },
+      { label: 'Photographs', href: 'photographs.html' },
+      { label: 'Articles',    href: 'articles.html'    },
+      { label: 'Blogs',       href: 'blogs.html'       },
+    ];
+
+    /** Edge pairs (index pairs into NAV_NODES). */
+    var NAV_EDGES = [
+      [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],
+      [0,3],[1,4],[2,5],[3,6],[4,7],[5,1],[6,0],[7,3],
+      [0,5],[2,7],
+    ];
+
+    /**
+     * Home positions as viewport fractions [0..1].
+     * Roughly circular + slight offsets for a neural-network look.
+     * Must have the same length as NAV_NODES.
+     */
+    var HOME_RATIOS = [
+      { rx: 0.50, ry: 0.16 },
+      { rx: 0.76, ry: 0.27 },
+      { rx: 0.85, ry: 0.53 },
+      { rx: 0.72, ry: 0.78 },
+      { rx: 0.50, ry: 0.86 },
+      { rx: 0.28, ry: 0.78 },
+      { rx: 0.15, ry: 0.53 },
+      { rx: 0.24, ry: 0.27 },
+    ];
+
+    /** Physics / rendering parameters. */
+    var CFG = {
+      bgCount:        100,
+      bgConnectDist:  155,
+      bgSpeedCap:     0.35,
+
+      fgRadiusVis:    7,
+      fgRadiusHit:    38,
+      fgDamping:      0.91,
+      fgNoise:        0.055,
+      fgSpringK:      0.016,
+      fgRepelRCursor: 140,
+      fgRepelFCursor: 2.0,
+      fgRepelRNode:   65,
+      fgRepelFNode:   0.55,
+
+      bgRepelR:       190,
+      bgRepelF:       0.35,
+    };
+
+    /**
+     * Themes: 'dark' (default) and 'light'.
+     * Add extra keys here to create custom themes.
+     */
+    var THEMES = {
+      dark: {
+        bgEdgeRGB: [255,255,255], bgEdgeMaxA: 0.038,
+        fgEdge:        'rgba(210,210,210,0.22)',
+        fgEdgeHover:   'rgba(255,255,255,0.62)',
+        fgEdgeW:        1,    fgEdgeHoverW:  1.6,
+        nodeStroke:    'rgba(255,255,255,0.88)',
+        nodeFill:      'rgba(255,255,255,0.07)',
+        nodeHoverFill: 'rgba(255,255,255,0.20)',
+        nodeStrokeW:    1.3,
+        nodeGlow:      'rgba(255,255,255,0.28)',
+        label:         'rgba(255,255,255,0.70)',
+        labelHover:    '#ffffff',
+      },
+      light: {
+        bgEdgeRGB: [0,0,0], bgEdgeMaxA: 0.048,
+        fgEdge:        'rgba(180,0,0,0.42)',
+        fgEdgeHover:   'rgba(220,0,0,0.90)',
+        fgEdgeW:        1.2,  fgEdgeHoverW:  2.2,
+        nodeStroke:    '#111111',
+        nodeFill:      'rgba(255,255,255,0.94)',
+        nodeHoverFill: 'rgba(255,225,225,0.98)',
+        nodeStrokeW:    3,
+        nodeGlow:      null,
+        label:         '#2a2a2a',
+        labelHover:    '#cc0000',
+      },
+    };
+
+    /* ════════════════════════════════════════════════════════════
+       STATE
+       ════════════════════════════════════════════════════════════ */
+    var isDark = true;
+    var theme  = THEMES.dark;
+    var W, H;
+    var mouse  = { x: -9999, y: -9999 };
+    var hovIdx = -1;
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var bgCvs = document.getElementById('bg-canvas');
+    var fgCvs = document.getElementById('fg-canvas');
+    var bgCtx = bgCvs.getContext('2d');
+    var fgCtx = fgCvs.getContext('2d');
+
+    var bgNodes = [];
+    var fgNodes = [];
+
+    /* ════════════════════════════════════════════════════════════
+       INIT
+       ════════════════════════════════════════════════════════════ */
+    function initBgNodes() {
+      bgNodes = [];
+      for (var i = 0; i < CFG.bgCount; i++) {
+        var a  = Math.random() * Math.PI * 2;
+        var sp = Math.random() * CFG.bgSpeedCap * 0.6 + 0.05;
+        bgNodes.push({ x: Math.random()*W, y: Math.random()*H,
+                        vx: Math.cos(a)*sp, vy: Math.sin(a)*sp });
+      }
+    }
+
+    function initFgNodes() {
+      fgNodes = NAV_NODES.map(function(nd, i) {
+        var r  = HOME_RATIOS[i];
+        var hx = r.rx * W, hy = r.ry * H;
+        var a  = Math.random() * Math.PI * 2;
+        return { x: hx + Math.cos(a)*40, y: hy + Math.sin(a)*40,
+                  vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2,
+                  hx: hx, hy: hy, label: nd.label, href: nd.href, hoverT: 0 };
+      });
+    }
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      bgCvs.width  = fgCvs.width  = W;
+      bgCvs.height = fgCvs.height = H;
+      if (fgNodes.length) {
+        for (var i = 0; i < fgNodes.length; i++) {
+          fgNodes[i].hx = HOME_RATIOS[i].rx * W;
+          fgNodes[i].hy = HOME_RATIOS[i].ry * H;
+        }
+      }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       PHYSICS
+       ════════════════════════════════════════════════════════════ */
+    function updateBg() {
+      if (reducedMotion) return;
+      for (var i = 0; i < bgNodes.length; i++) {
+        var n  = bgNodes[i];
+        var dx = n.x - mouse.x, dy = n.y - mouse.y;
+        var d2 = dx*dx + dy*dy;
+        if (d2 < CFG.bgRepelR*CFG.bgRepelR && d2 > 0.01) {
+          var d = Math.sqrt(d2);
+          var f = (1 - d/CFG.bgRepelR) * CFG.bgRepelF;
+          n.vx += (dx/d)*f; n.vy += (dy/d)*f;
+        }
+        n.vx += (Math.random()-0.5)*0.018;
+        n.vy += (Math.random()-0.5)*0.018;
+        n.vx *= 0.982; n.vy *= 0.982;
+        var sp = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
+        if (sp > CFG.bgSpeedCap) { var inv=CFG.bgSpeedCap/sp; n.vx*=inv; n.vy*=inv; }
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < -12)   n.x += W+24; else if (n.x > W+12) n.x -= W+24;
+        if (n.y < -12)   n.y += H+24; else if (n.y > H+12) n.y -= H+24;
+      }
+    }
+
+    function updateFg() {
+      var found = -1;
+      for (var i = 0; i < fgNodes.length; i++) {
+        var n=fgNodes[i], dx=n.x-mouse.x, dy=n.y-mouse.y;
+        if (dx*dx+dy*dy <= CFG.fgRadiusHit*CFG.fgRadiusHit) { found=i; break; }
+      }
+      hovIdx = found;
+
+      if (!reducedMotion) {
+        for (var i = 0; i < fgNodes.length; i++) {
+          var n = fgNodes[i];
+          n.vx += (n.hx - n.x) * CFG.fgSpringK;
+          n.vy += (n.hy - n.y) * CFG.fgSpringK;
+          n.vx += (Math.random()-0.5) * CFG.fgNoise;
+          n.vy += (Math.random()-0.5) * CFG.fgNoise;
+
+          var cx=n.x-mouse.x, cy=n.y-mouse.y, cd=Math.sqrt(cx*cx+cy*cy);
+          if (cd < CFG.fgRepelRCursor && cd > 0.1) {
+            var cf = (1-cd/CFG.fgRepelRCursor)*CFG.fgRepelFCursor;
+            n.vx += (cx/cd)*cf; n.vy += (cy/cd)*cf;
+          }
+
+          for (var j = i+1; j < fgNodes.length; j++) {
+            var m=fgNodes[j], ex=n.x-m.x, ey=n.y-m.y, ed=Math.sqrt(ex*ex+ey*ey);
+            if (ed < CFG.fgRepelRNode && ed > 0.1) {
+              var ef=(1-ed/CFG.fgRepelRNode)*CFG.fgRepelFNode;
+              var fx=(ex/ed)*ef, fy=(ey/ed)*ef;
+              n.vx+=fx; n.vy+=fy; m.vx-=fx; m.vy-=fy;
             }
+          }
+          n.vx *= CFG.fgDamping; n.vy *= CFG.fgDamping;
+          n.x  += n.vx;           n.y  += n.vy;
+        }
+      }
 
-            @media (max-width: 480px) {
-                nav {
-                    padding: 1.2rem 1.5rem;
-                }
-                .gallery-grid {
-                    column-count: 1;
-                }
-                .hero h1 {
-                    font-size: clamp(2.2rem, 12vw, 3.5rem);
-                }
-                .event-item {
-                    flex-direction: column;
-                    gap: 0.3rem;
-                    align-items: flex-start;
-                }
-                .event-date {
-                    font-size: 0.65rem;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <nav>
-            <div class="logo">
-                <img src="logocircled.png" alt="Pixel logo" />
-                Pixel.
-            </div>
-            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="nav-links" id="nav-links">
-                <a href="#clicks" class="nav-close">Clicks</a>
-                <a href="#events" class="nav-close">Events</a>
-                <a href="#workshops" class="nav-close">Learn</a>
-                <a href="#equipments" class="nav-close">Equipments</a>
-                <a href="about.html" class="nav-close">About</a>
-            </div>
-        </nav>
+      for (var i = 0; i < fgNodes.length; i++) {
+        var target = (i === hovIdx) ? 1 : 0;
+        fgNodes[i].hoverT += (target - fgNodes[i].hoverT) * 0.14;
+      }
+    }
 
-        <header class="hero">
-            <h1>The Art of Seeing</h1>
-            <div class="hero-sub">Photography Club of IISER Kolkata</div>
-        </header>
+    /* ════════════════════════════════════════════════════════════
+       DRAW
+       ════════════════════════════════════════════════════════════ */
+    function drawBg() {
+      bgCtx.clearRect(0, 0, W, H);
+      var rgb = theme.bgEdgeRGB, maxA = theme.bgEdgeMaxA;
+      bgCtx.lineWidth = 0.75;
+      for (var i = 0; i < bgNodes.length; i++) {
+        var a = bgNodes[i];
+        for (var j = i+1; j < bgNodes.length; j++) {
+          var b=bgNodes[j], dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
+          if (d < CFG.bgConnectDist) {
+            var alpha = (1-d/CFG.bgConnectDist)*maxA;
+            bgCtx.strokeStyle = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+alpha.toFixed(4)+')';
+            bgCtx.beginPath(); bgCtx.moveTo(a.x,a.y); bgCtx.lineTo(b.x,b.y); bgCtx.stroke();
+          }
+        }
+      }
+    }
 
-        <section id="clicks">
-            <div class="scroll-reveal">
-                <h2>Clicks.</h2>
-                <div class="gallery-grid">
-                    <div class="gallery-item">
-                        <img src="Jaguli_Farmer.jpeg" alt="Farmer">
-                        <div class="caption">Tijare Mandar</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="haze.JPG" alt="haze" />
-                        <div class="caption">haze</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="Man with a horse.jpg" alt="man with a horse" />
-                        <div class="caption">Tejendra Singh</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="Straightlines.jpeg" alt="Straight Lines" />
-                        <div class="caption">Kaustav Gangopadhyay</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="kalyanghoshgoldenhour2.jpeg" alt="Kalyan Ghosh" />
-                        <div class="caption">Kalyan Ghosh</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="Red-crested-pochard.jpeg" alt="Red crested pochard" />
-                        <div class="caption">Red crested pochard</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="Yumthang_Valley.jpeg" alt="Yumthang Valley" />
-                        <div class="caption">Tijare Mandar Rajesh</div>
-                    </div>
-                    <div class="gallery-item">
-                        <img src="macrofly.jpeg" alt="Dragon fly">
-                        <div class="caption">Dhrubanarayana Chakrabarty</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    function drawFg() {
+      fgCtx.clearRect(0, 0, W, H);
 
-        <div class="view-more-container scroll-reveal">
-            <a href="archive.html" class="btn-minimal">View Archives</a>
-        </div>
+      /* edges */
+      for (var e = 0; e < NAV_EDGES.length; e++) {
+        var i=NAV_EDGES[e][0], j=NAV_EDGES[e][1];
+        var a=fgNodes[i], b=fgNodes[j];
+        var ht = Math.max(a.hoverT, b.hoverT);
+        fgCtx.strokeStyle = ht > 0.05 ? lerpColor(theme.fgEdge, theme.fgEdgeHover, ht) : theme.fgEdge;
+        fgCtx.lineWidth   = theme.fgEdgeW + (theme.fgEdgeHoverW - theme.fgEdgeW) * ht;
+        fgCtx.beginPath(); fgCtx.moveTo(a.x,a.y); fgCtx.lineTo(b.x,b.y); fgCtx.stroke();
+      }
 
-        <section id="events">
-            <div class="scroll-reveal">
-                <h2>Events.</h2>
-                <div class="event-list">
-                    <div class="event-item">
-                        <h3><a href="themedweekly.html">Weekly Themed</a></h3>
-                        <span class="event-date">Feb–Mar, 2026</span>
-                    </div>
-                    <div class="event-item">
-                        <h3><a href="coloredweekly.html">Weekly Colored</a></h3>
-                        <span class="event-date">Aug–Sep, 2025</span>
-                    </div>
-                    <div class="event-item">
-                        <h3>Inquivesta Exhibition</h3>
-                        <span class="event-date">Feb, 2026</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+      /* nodes */
+      for (var i = 0; i < fgNodes.length; i++) {
+        var n=fgNodes[i], ht=n.hoverT, r=CFG.fgRadiusVis*(1+ht*0.65);
 
-        <section id="workshops">
-            <div class="scroll-reveal">
-                <h2>Learn.</h2>
-                <div class="event-list">
-                    <div class="event-item" onclick="window.location.href='composition.html'">
-                        <h3>Learn about compositions</h3>
-                        <span class="event-date">Theory</span>
-                    </div>
-                    <div class="event-item" onclick="window.location.href='understandlight.html'">
-                        <h3>Understanding Light</h3>
-                        <span class="event-date">Theory & Practical</span>
-                    </div>
-                    <div class="event-item" onclick="window.location.href='genreguide.html'">
-                        <h3>Genre Guide</h3>
-                        <span class="event-date">Theory</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+        if (theme.nodeGlow && ht > 0.05) {
+          fgCtx.shadowBlur  = 18 * ht;
+          fgCtx.shadowColor = theme.nodeGlow;
+        } else { fgCtx.shadowBlur = 0; }
 
-        <section id="equipments">
-            <div class="scroll-reveal">
-                <h2>Equipments.</h2>
-                <p style="margin-bottom: 2rem">Gear available for club members.</p>
-                <div class="tech-grid">
-                    <div class="tech-item">
-                        <h4>Bodies</h4>
-                        <div class="tech-specs">
-                            Sony Alpha ILCE 6400L<br />
-                            Nikon D5300<br />
-                            FUJIFILM Instax Mini EVO
-                        </div>
-                    </div>
-                    <div class="tech-item">
-                        <h4>Lenses</h4>
-                        <div class="tech-specs">
-                            Nikon AF-P 18-55mm F3.5-5.6 VR II Kit Lens<br />
-                            AF-S NIKKOR 200-500MM F/5.6E ED VR<br />
-                            Sony Alpha kit lens 14-50mm
-                        </div>
-                    </div>
-                    <div class="tech-item">
-                        <h4>Support</h4>
-                        <div class="tech-specs">
-                            Kodak Tripod stand<br />
-                            SAMSUNG 256GB SD Card<br />
-                            Sandisk 256GB SD Card
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        fgCtx.beginPath(); fgCtx.arc(n.x, n.y, r, 0, Math.PI*2);
+        fgCtx.fillStyle   = ht > 0.05 ? lerpColor(theme.nodeFill, theme.nodeHoverFill, ht) : theme.nodeFill;
+        fgCtx.fill();
+        fgCtx.strokeStyle = theme.nodeStroke;
+        fgCtx.lineWidth   = theme.nodeStrokeW;
+        fgCtx.stroke();
+        fgCtx.shadowBlur  = 0;
 
-        <footer>
-            PIXEL &copy; 2025<br />
-            Indian Institute of Science Education and Research Kolkata<br />
-            All contents listed on the website are property of Pixel
-        </footer>
+        var labelSize = 11 + ht*2;
+        fgCtx.font         = (400 + Math.round(ht*100)) + ' ' + labelSize + 'px "Montserrat",sans-serif';
+        fgCtx.fillStyle    = ht > 0.05 ? lerpColor(theme.label, theme.labelHover, ht) : theme.label;
+        fgCtx.textAlign    = 'center';
+        fgCtx.textBaseline = 'middle';
+        var above  = n.hy > H * 0.55;
+        var offset = r + 14 + ht*3;
+        fgCtx.fillText(n.label, n.x, n.y + (above ? -offset : offset), 260);
+      }
+    }
 
-        <script>
-            // Scroll reveal
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) entry.target.classList.add("visible");
-                });
-            }, { threshold: 0.1 });
-            document.querySelectorAll(".scroll-reveal").forEach((el) => observer.observe(el));
+    /* ════════════════════════════════════════════════════════════
+       COLOUR LERP HELPER
+       ════════════════════════════════════════════════════════════ */
+    var _cc = {};
+    function parseColor(s) {
+      if (_cc[s]) return _cc[s];
+      var m;
+      if ((m = s.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)))
+        return (_cc[s] = [+m[1],+m[2],+m[3], m[4]!==undefined?+m[4]:1]);
+      if ((m = s.match(/^#([0-9a-f]{6})$/i))) {
+        var v=parseInt(m[1],16);
+        return (_cc[s] = [(v>>16)&255,(v>>8)&255,v&255,1]);
+      }
+      return (_cc[s] = [128,128,128,1]);
+    }
+    function lerpColor(c1,c2,t) {
+      var a=parseColor(c1), b=parseColor(c2);
+      return 'rgba('+Math.round(a[0]+(b[0]-a[0])*t)+','+
+                     Math.round(a[1]+(b[1]-a[1])*t)+','+
+                     Math.round(a[2]+(b[2]-a[2])*t)+','+
+                     +(a[3]+(b[3]-a[3])*t).toFixed(3)+')';
+    }
 
-            // Hamburger menu
-            const hamburger = document.getElementById("hamburger");
-            const navLinks  = document.getElementById("nav-links");
+    /* ════════════════════════════════════════════════════════════
+       TOOLTIP
+       ════════════════════════════════════════════════════════════ */
+    var tooltipEl = document.getElementById('tooltip');
+    var lastHov   = -1;
+    function updateTooltip() {
+      if (hovIdx === lastHov) return;
+      lastHov = hovIdx;
+      if (hovIdx >= 0) {
+        tooltipEl.textContent = fgNodes[hovIdx].label;
+        tooltipEl.classList.add('visible');
+      } else {
+        tooltipEl.classList.remove('visible');
+      }
+    }
+    fgCvs.addEventListener('mousemove', function(e) {
+      tooltipEl.style.left = (e.clientX + 18) + 'px';
+      tooltipEl.style.top  = (e.clientY - 10) + 'px';
+    });
 
-            hamburger.addEventListener("click", () => {
-                hamburger.classList.toggle("open");
-                navLinks.classList.toggle("open");
-                document.body.style.overflow = navLinks.classList.contains("open") ? "hidden" : "";
-            });
+    /* ════════════════════════════════════════════════════════════
+       EVENTS
+       ════════════════════════════════════════════════════════════ */
+    fgCvs.addEventListener('mousemove', function(e) { mouse.x=e.clientX; mouse.y=e.clientY; });
+    fgCvs.addEventListener('mouseleave', function() { mouse.x=mouse.y=-9999; });
 
-            // Close menu when a link is tapped
-            document.querySelectorAll(".nav-close").forEach(link => {
-                link.addEventListener("click", () => {
-                    hamburger.classList.remove("open");
-                    navLinks.classList.remove("open");
-                    document.body.style.overflow = "";
-                });
-            });
-        </script>
-    </body>
+    fgCvs.addEventListener('touchstart', function(e) {
+      if (e.touches.length===1) { mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; }
+    }, { passive: true });
+    fgCvs.addEventListener('touchmove', function(e) {
+      if (e.touches.length===1) { e.preventDefault(); mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; }
+    }, { passive: false });
+    fgCvs.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      var t=e.changedTouches[0], tx=t.clientX, ty=t.clientY;
+      var hitR = CFG.fgRadiusHit * 1.4;
+      for (var i=0;i<fgNodes.length;i++) {
+        var n=fgNodes[i], dx=n.x-tx, dy=n.y-ty;
+        if (dx*dx+dy*dy <= hitR*hitR) { window.location.href=n.href; return; }
+      }
+      mouse.x=mouse.y=-9999;
+    }, { passive: false });
+
+    fgCvs.addEventListener('click', function(e) {
+      for (var i=0;i<fgNodes.length;i++) {
+        var n=fgNodes[i], dx=n.x-e.clientX, dy=n.y-e.clientY;
+        if (dx*dx+dy*dy <= CFG.fgRadiusHit*CFG.fgRadiusHit) { window.location.href=n.href; return; }
+      }
+    });
+
+    document.getElementById('theme-btn').addEventListener('click', function() {
+      isDark = !isDark;
+      theme  = isDark ? THEMES.dark : THEMES.light;
+      document.body.className = isDark ? 'dark' : 'light';
+      _cc = {};  /* clear colour cache */
+    });
+
+    window.addEventListener('resize', function() { resize(); initBgNodes(); });
+
+    /* dismiss hint */
+    var hintEl = document.getElementById('hint');
+    var hintDone = false;
+    function dismissHint() { if (!hintDone) { hintDone=true; hintEl.classList.add('hidden'); } }
+    setTimeout(dismissHint, 4500);
+    fgCvs.addEventListener('mousemove', dismissHint, { once: true });
+    fgCvs.addEventListener('touchstart', dismissHint, { once: true });
+
+    /* ════════════════════════════════════════════════════════════
+       ANIMATION LOOP
+       ════════════════════════════════════════════════════════════ */
+    function loop() {
+      updateBg(); updateFg();
+      drawBg();   drawFg();
+      fgCvs.style.cursor = hovIdx >= 0 ? 'pointer' : 'default';
+      updateTooltip();
+      requestAnimationFrame(loop);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       BOOT
+       ════════════════════════════════════════════════════════════ */
+    resize();
+    initBgNodes();
+    initFgNodes();
+    loop();
+
+  }());
+  </script>
+</body>
 </html>
